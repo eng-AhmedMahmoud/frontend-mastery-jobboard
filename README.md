@@ -68,6 +68,16 @@ pnpm stage:publish m03-utils    # regenerates m03-utils/guided and m03-utils/sta
 pnpm stage:verify  m03-utils    # asserts solution passes, guided & start fail, tests identical
 ```
 
+Each stage branch carries a `stage.config.json` saying which paths belong to it:
+
+```json
+{ "stage": "m07-autocomplete", "strip": ["src/components/autocomplete"] }
+```
+
+That scope matters. A stage branches from the previous stage's solution, so without it the
+stripper would also blank out work the student already finished — `m07-autocomplete/start`
+would ship a broken `debounce` and fail for the wrong reason.
+
 Markers used inside solution files:
 
 ```ts
