@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # A solution branch is the source of truth: it has to be green.
+      # A start or guided branch has to be RED — if its tests pass, the exercise
+      # is already solved and the student has nothing to do. Catch that here,
+      # not in a support message three weeks after launch.
+      - name: Tests behave as the branch promises
+        run: |
+          branch="${GITHUB_REF_NAME}"
+          case "$branch" in
+            */start|*/guided)
+              echo "▸ $branch — tests are expected to FAIL"
+              if pnpm vitest run --reporter=dot; then
+                echo "::error::$branch passes its tests, but an exercise branch must fail them"
+                exit 1
+              fi
+              echo "✓ failed as expected"
+              ;;
+            *)
+              echo "▸ $branch — tests are expected to PASS"
+              pnpm vitest run --reporter=dot
+              ;;
+          esac
