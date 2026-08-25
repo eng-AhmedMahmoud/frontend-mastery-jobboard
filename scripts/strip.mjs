@@ -20,10 +20,16 @@
  *   // #note anything the student should read in every version
  *      Kept everywhere. Use for the brief, never for the answer.
  *
- * Usage: node scripts/strip.mjs --mode guided|start [--dir src] [--dry]
+ * Scope: only the current stage's own files are stripped. Work the student already did in an
+ * earlier stage stays solved — `stage.config.json` on the branch says which paths are in scope.
+ *
+ *   { "stage": "m07-autocomplete", "strip": ["src/components/autocomplete"] }
+ *
+ * Usage: node scripts/strip.mjs --mode guided|start [--dir <path>] [--dry]
  */
 
 import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { join, extname } from 'node:path'
 
 const args = process.argv.slice(2)
@@ -33,8 +39,22 @@ const getArg = (name, fallback) => {
 }
 
 const mode = getArg('mode')
-const rootDir = getArg('dir', 'src')
 const dryRun = args.includes('--dry')
+
+const readStageConfig = async () => {
+  if (!existsSync('stage.config.json')) return null
+  return JSON.parse(await readFile('stage.config.json', 'utf8'))
+}
+
+const stageConfig = await readStageConfig()
+const explicitDir = getArg('dir')
+const roots = explicitDir
+  ? [explicitDir]
+  : (stageConfig?.strip ?? ['src'])
+
+if (!explicitDir && !stageConfig) {
+  console.warn('strip.mjs: no stage.config.json found — falling back to the whole of src/')
+}
 
 if (mode !== 'guided' && mode !== 'start') {
   console.error('strip.mjs: --mode must be "guided" or "start"')
@@ -122,28 +142,35 @@ function transform(source, mode) {
 let touched = 0
 let skipped = 0
 
-for await (const path of walk(rootDir)) {
-  const normalized = path.split('\\').join('/')
-  if (isProtected(normalized)) {
-    skipped++
-    continue
-  }
-
-  const source = await readFile(path, 'utf8')
-  let result
-  try {
-    result = transform(source, mode)
-  } catch (error) {
-    console.error(`strip.mjs: ${path}: ${error.message}`)
+for (const root of roots) {
+  if (!existsSync(root)) {
+    console.error(`strip.mjs: "${root}" from stage.config.json does not exist on this branch`)
     process.exit(1)
   }
 
-  if (!result.changed) continue
-  touched++
-  if (!dryRun) await writeFile(path, result.text, 'utf8')
-  console.log(`  ${dryRun ? 'would strip' : 'stripped'}  ${path}`)
+  for await (const path of walk(root)) {
+    const normalized = path.split('\\').join('/')
+    if (isProtected(normalized)) {
+      skipped++
+      continue
+    }
+
+    const source = await readFile(path, 'utf8')
+    let result
+    try {
+      result = transform(source, mode)
+    } catch (error) {
+      console.error(`strip.mjs: ${path}: ${error.message}`)
+      process.exit(1)
+    }
+
+    if (!result.changed) continue
+    touched++
+    if (!dryRun) await writeFile(path, result.text, 'utf8')
+    console.log(`  ${dryRun ? 'would strip' : 'stripped'}  ${path}`)
+  }
 }
 
 console.log(
-  `strip.mjs: mode=${mode} · ${touched} file(s) ${dryRun ? 'to strip' : 'stripped'} · ${skipped} protected file(s) left untouched`,
+  `strip.mjs: mode=${mode} · scope=${roots.join(', ')} · ${touched} file(s) ${dryRun ? 'to strip' : 'stripped'} · ${skipped} protected file(s) left untouched`,
 )
