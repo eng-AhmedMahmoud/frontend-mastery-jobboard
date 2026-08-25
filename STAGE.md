@@ -1,57 +1,73 @@
-# Stage m03-utils — the interview utility library
+# Stage m07-autocomplete — the search box
 
-**Module 3 · JavaScript, Deeply**
+**Module 7 · UI Engineering: Components & Accessibility**
 
-Six functions that get asked in real interviews more often than anything else on the frontend.
-You're not using them from a library here — you're writing them, with the tests an interviewer
-would write if they had time.
+Build the job board's search autocomplete from scratch. No combobox library, no headless UI.
 
-## What you implement
+This is the most frequently asked "build this live" question in frontend interviews, and it is
+asked precisely because five separate skills collide in one component. Most candidates get three
+of them.
 
-| File | Function | The follow-up question you should expect |
+## What's actually being tested
+
+| # | Skill | The failure mode |
 |---|---|---|
-| `src/utils/debounce.ts` | `debounce(fn, wait)` + `cancel` / `flush` | "What happens to `this`?" · "How would you add a leading edge?" |
-| `src/utils/throttle.ts` | `throttle(fn, wait, { leading, trailing })` | "How is this different from debounce?" · "Which one for infinite scroll?" |
-| `src/utils/deep-clone.ts` | `deepClone(value)` | "What about Dates? Maps? Cycles?" · "Why not `JSON.parse(JSON.stringify(x))`?" |
-| `src/utils/event-emitter.ts` | `EventEmitter` — `on` / `once` / `off` / `emit` | "What if a listener unsubscribes during emit?" |
-| `src/utils/promise-all.ts` | `promiseAll(values)` | "Why is result order preserved?" · "Now write `allSettled`" |
+| 1 | Debouncing | A request per keystroke. Reuse the `debounce` you wrote in `m03-utils`. |
+| 2 | **Race conditions** | You type `react`, then ` engineer`. The first response lands last and overwrites the newer results. This is the one that separates mid from senior. |
+| 3 | Keyboard access | Arrows don't wrap, Enter submits the form, Escape does nothing, the caret jumps because you forgot `preventDefault`. |
+| 4 | ARIA combobox | No `role`, no `aria-expanded`, no `aria-activedescendant` — or worse, moving DOM focus into the list. |
+| 5 | State honesty | Loading, empty and error all rendered as "nothing happened". |
 
-## Where it goes in the product
+## The contract
 
-These aren't exercises in a vacuum — the job board uses all of them:
+```ts
+<SearchAutocomplete
+  label="Search jobs"
+  fetchSuggestions={(query, signal) => Promise<JobSuggestion[]>}
+  onSelect={(suggestion) => void}
+  debounceMs={250}
+  minQueryLength={2}
+/>
+```
 
-- `debounce` → the search box in module 7's autocomplete
-- `throttle` → the infinite-scroll handler on the listings feed
-- `deepClone` → resetting filters to their last saved state
-- `EventEmitter` → the toast system in module 7
-- `promiseAll` → loading a job and its employer in parallel in module 8
+15 tests describe the behaviour precisely. Read them before you write anything — in a real
+interview, the questions you ask before coding are half the score.
+
+## Things worth knowing before you start
+
+- **`aria-activedescendant`, not focus.** In a combobox, DOM focus stays in the input the whole
+  time. The input points at the active option's `id`. Moving real focus into the list breaks
+  typing and is the most common accessibility mistake in this component.
+- **`onMouseDown`, not `onClick`,** for selecting an option. `click` fires after `blur`, and by
+  then the list has already closed — so your handler never runs.
+- **Sequence numbers *and* `AbortController`.** The sequence number keeps the UI correct; the
+  abort stops wasted network. An interviewer will ask for both, and they solve different problems.
+- **Build the debounced function once.** Created in the render body, it's a new function on every
+  render, and a fresh debounce debounces nothing.
 
 ## Working through it
 
 ```bash
+git checkout m07-autocomplete/start
 pnpm install
-pnpm test:watch        # red, 39 failing
+pnpm test:watch
 ```
 
-Implement one file at a time. The tests are ordered from the obvious case to the one that
-catches people out — if you're passing the first three tests in a file and failing the last two,
-you've written the version most candidates write.
+The tests are ordered from the obvious to the brutal. If you're passing everything except
+`ignores a slow response that arrives after a newer one`, you've written the version that ships
+to production and then produces a bug report nobody can reproduce.
 
-Stuck on a specific function? Pull only its hints:
-
-```bash
-git checkout m03-utils/guided -- src/utils/debounce.ts
-```
-
-Done? Compare, don't just check:
-
-```bash
-git diff m03-utils/solution -- src/utils/
-```
+Stuck? `git checkout m07-autocomplete/guided -- src/components/`
 
 ## Acceptance
 
-- `pnpm test` — 39 passing
-- `pnpm typecheck` — clean, with `strict` on
-- No `any`, no `@ts-expect-error`
-- Every function keeps working if called with no arguments, called twice, or cancelled mid-flight
+- `pnpm test` — 54 passing (39 from `m03-utils`, 15 here)
+- `pnpm typecheck` — clean
+- Keyboard-only: you can search, choose and submit without touching the mouse
+- The list never shows results for a query that is no longer in the input
+
+## Where it goes
+
+This is the search box at the top of the job board. Module 8 replaces the hand-rolled
+fetching with TanStack Query and the term moves into the URL — at which point you'll see exactly
+which parts of this component were state management and which were UI.
