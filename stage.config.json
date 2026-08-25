@@ -1,0 +1,7 @@
+{
+  "stage": "m03-utils",
+  "module": 3,
+  "title": "The interview utility library",
+  "strip": ["src/utils"],
+  "note": "First stage — nothing earlier to preserve."
+}
