@@ -23,7 +23,7 @@
  * Scope: only the current stage's own files are stripped. Work the student already did in an
  * earlier stage stays solved — `stage.config.json` on the branch says which paths are in scope.
  *
- *   { "stage": "m07-autocomplete", "strip": ["src/components/autocomplete"] }
+ *   { "stage": "module-7/autocomplete", "strip": ["src/components/autocomplete"] }
  *
  * Usage: node scripts/strip.mjs --mode guided|start [--dir <path>] [--dry]
  */

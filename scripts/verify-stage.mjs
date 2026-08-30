@@ -8,7 +8,7 @@
  *   3. `start` fails    — otherwise the exercise is already solved for the student
  *   4. `guided` fails   — hints, not answers
  *
- * Usage: node scripts/verify-stage.mjs m03-utils
+ * Usage: node scripts/verify-stage.mjs module-3/utils
  */
 
 import { execFileSync, spawnSync } from 'node:child_process'
@@ -16,7 +16,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 const stage = process.argv[2]
 
 if (!stage) {
-  console.error('usage: node scripts/verify-stage.mjs <stage>   e.g. m03-utils')
+  console.error('usage: node scripts/verify-stage.mjs <stage>   e.g. module-3/utils')
   process.exit(1)
 }
 
@@ -43,7 +43,8 @@ for (const branch of branches.slice(1)) {
 const expectation = { solution: 'pass', guided: 'fail', start: 'fail' }
 
 for (const branch of branches) {
-  const mode = branch.split('/')[1]
+  // Stage names are nested (module-3/utils), so the mode is the last segment.
+  const mode = branch.split('/').pop()
   git('checkout', branch)
   const result = spawnSync('pnpm', ['vitest', 'run', '--reporter=dot'], { encoding: 'utf8' })
   const passed = result.status === 0
@@ -51,7 +52,7 @@ for (const branch of branches) {
   const want = expectation[mode]
   const ok = got === want
 
-  console.log(`${ok ? '✓' : '✗'} ${branch.padEnd(28)} expected ${want}, got ${got}`)
+  console.log(`${ok ? '✓' : '✗'} ${branch.padEnd(34)} expected ${want}, got ${got}`)
   if (!ok) {
     failures.push(
       want === 'pass'

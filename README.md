@@ -6,6 +6,19 @@ assembles the slices into a deployed application you can defend in an interview.
 `main` holds the finished capstone and the shared foundation (domain types, fixtures, tooling).
 The exercises live on branches.
 
+## Branch naming
+
+Branches follow the course convention in `../GIT-CONVENTIONS.md`:
+
+```
+module-<N>/v<V>-<slug>/<start|guided|solution>     target
+module-3/utils/start                               today — video numbers land with each
+                                                   module's lesson map
+```
+
+The end state of a video is tagged `m<N>-v<V>-end` on its `solution` branch, so a student
+who fell behind can `git checkout m3-v4-end` and be caught up. Tags come with the numbers.
+
 ## Three branches per stage
 
 Every exercise stage exists three times:
@@ -22,19 +35,19 @@ implementation is already there.
 ## How to work through a stage
 
 ```bash
-git checkout m03-utils/start
+git checkout module-3/utils/start
 pnpm install
 pnpm test:watch          # red
 
 # ...implement until green...
 
-git diff m03-utils/solution -- src/     # compare your approach to mine
+git diff module-3/utils/solution -- src/     # compare your approach to mine
 ```
 
 Stuck on one function? Pull just the hints for it, not the answer:
 
 ```bash
-git checkout m03-utils/guided -- src/utils/debounce.ts
+git checkout module-3/utils/guided -- src/utils/debounce.ts
 ```
 
 Do the struggling first. The hint is worth far less if you read it before you've tried.
@@ -43,18 +56,18 @@ Do the struggling first. The hint is worth far less if you read it before you've
 
 | Branch base | Module | What you build |
 |---|---|---|
-| `m02-browser-lab` | 2 | Instrument a slow page: reflow vs repaint, compositor-only animation, flame charts |
-| `m03-utils` | 3 | The utility library: debounce, throttle, deepClone, curry, EventEmitter, promiseAll |
-| `m04-domain-types` | 4 | Typed domain model, discriminated states, schema validation, typed API client |
-| `m05-feed-ui` | 5 | The listings feed in React — composition, keys, effects, a profiler pass |
-| `m06-typed-components` | 6 | Typed primitives: polymorphic Button, generic Select, typed fields |
-| `m07-autocomplete` | 7 | Search autocomplete: debounce, race conditions, keyboard nav, ARIA combobox |
-| `m07-overlays` | 7 | Apply modal, filter dropdown, tabs, toasts — focus trap, portals, live regions |
-| `m07-virtual-list` | 7 | Virtualized listings by hand: windowing, pooling, recycling |
-| `m08-data-layer` | 8 | TanStack Query + Router: caching, optimistic apply, filters as URL state |
-| `m09-next-rendering` | 9 | Next.js port: public SEO pages vs authenticated dashboard, server actions |
-| `m10-perf-and-tests` | 10 | Baseline → budget → fix, with Vitest + Playwright + MSW in CI |
-| `m12-capstone` | 12 | Assemble everything, wire auth, deploy, write the architecture story |
+| `module-2/browser-lab` | 2 | Instrument a slow page: reflow vs repaint, compositor-only animation, flame charts |
+| `module-3/utils` | 3 | The utility library: debounce, throttle, deepClone, curry, EventEmitter, promiseAll |
+| `module-4/domain-types` | 4 | Typed domain model, discriminated states, schema validation, typed API client |
+| `module-5/feed-ui` | 5 | The listings feed in React — composition, keys, effects, a profiler pass |
+| `module-6/typed-components` | 6 | Typed primitives: polymorphic Button, generic Select, typed fields |
+| `module-7/autocomplete` | 7 | Search autocomplete: debounce, race conditions, keyboard nav, ARIA combobox |
+| `module-7/overlays` | 7 | Apply modal, filter dropdown, tabs, toasts — focus trap, portals, live regions |
+| `module-7/virtual-list` | 7 | Virtualized listings by hand: windowing, pooling, recycling |
+| `module-8/data-layer` | 8 | TanStack Query + Router: caching, optimistic apply, filters as URL state |
+| `module-9/next-rendering` | 9 | Next.js port: public SEO pages vs authenticated dashboard, server actions |
+| `module-10/perf-and-tests` | 10 | Baseline → budget → fix, with Vitest + Playwright + MSW in CI |
+| `module-12/capstone` | 12 | Assemble everything, wire auth, deploy, write the architecture story |
 
 ## For the instructor
 
@@ -62,20 +75,20 @@ The solution branch is the only one written by hand. `guided` and `start` are ge
 from it, so they cannot drift:
 
 ```bash
-git checkout m03-utils/solution
+git checkout module-3/utils/solution
 # ...edit, commit...
-pnpm stage:publish m03-utils    # regenerates m03-utils/guided and m03-utils/start
-pnpm stage:verify  m03-utils    # asserts solution passes, guided & start fail, tests identical
+pnpm stage:publish module-3/utils   # regenerates .../guided and .../start
+pnpm stage:verify  module-3/utils   # solution passes, guided & start fail, tests identical
 ```
 
 Each stage branch carries a `stage.config.json` saying which paths belong to it:
 
 ```json
-{ "stage": "m07-autocomplete", "strip": ["src/components/autocomplete"] }
+{ "stage": "module-7/autocomplete", "video": null, "strip": ["src/components/autocomplete"] }
 ```
 
 That scope matters. A stage branches from the previous stage's solution, so without it the
-stripper would also blank out work the student already finished — `m07-autocomplete/start`
+stripper would also blank out work the student already finished — `module-7/autocomplete/start`
 would ship a broken `debounce` and fail for the wrong reason.
 
 Markers used inside solution files:
