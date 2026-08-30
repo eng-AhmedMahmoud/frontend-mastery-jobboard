@@ -8,7 +8,7 @@
 //   4. ARIA combobox      — the roles and attributes screen readers rely on
 //   5. state honesty      — loading, empty and error are different things
 // 
-// You already wrote the debounce in m03-utils. Reuse it — don't rewrite it.
+// You already wrote the debounce in module-3/utils. Reuse it — don't rewrite it.
 
 import { useEffect, useId, useRef, useState } from 'react'
 import { debounce } from '@/utils/debounce'
