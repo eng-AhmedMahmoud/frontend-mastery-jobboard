@@ -6,5 +6,5 @@
   "strip": [
     "src/utils"
   ],
-  "note": "First stage — nothing earlier to preserve."
+  "note": "First stage — nothing earlier to preserve. src/utils is a layer of its own: framework-free, importing nothing from src, which is what makes these functions portable to an interview."
 }
