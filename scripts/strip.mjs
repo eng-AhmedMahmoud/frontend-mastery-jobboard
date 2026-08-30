@@ -86,7 +86,6 @@ function transform(source, mode) {
   const output = []
   let pendingPlaceholder = null
   let inRegion = false
-  let regionIndent = ''
   let changed = false
 
   for (const line of lines) {
@@ -109,8 +108,7 @@ function transform(source, mode) {
     if (/^\/\/\s*#region\s+solution\b/.test(trimmed)) {
       inRegion = true
       changed = true
-      regionIndent = indentOf(line)
-      output.push(`${regionIndent}${pendingPlaceholder ?? DEFAULT_PLACEHOLDER}`)
+      output.push(`${indentOf(line)}${pendingPlaceholder ?? DEFAULT_PLACEHOLDER}`)
       continue
     }
 

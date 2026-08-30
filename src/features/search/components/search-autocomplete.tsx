@@ -61,7 +61,12 @@ export function SearchAutocomplete({
   const requestSeq = useRef(0)
   const controllerRef = useRef<AbortController>(null)
 
+  // The debounced searcher is created once and kept in a ref so its timer survives
+  // re-renders. The refs it closes over are only ever read inside the debounced
+  // callback — that is, in a timeout, never during render. The rule cannot see that,
+  // and rewriting this to satisfy it would lose the timer on every keystroke.
   const searchRef = useRef(
+    // eslint-disable-next-line react-hooks/refs
     debounce((term: string) => {
       const seq = ++requestSeq.current
       controllerRef.current?.abort()

@@ -71,7 +71,7 @@ step is where most of the learning actually happens — not in getting to green.
 | Branch base | Module | What you build | Status |
 |---|:--:|---|:--:|
 | `module-2/browser-lab` | 2 | Instrument a slow page: reflow vs repaint, compositor-only animation, flame charts | |
-| `module-3/utils` | 3 | The utility library: `debounce`, `throttle`, `deepClone`, `curry`, `EventEmitter`, `promiseAll` | ✅ |
+| `module-3/utils` | 3 | The utility library: `debounce`, `throttle`, `deepClone`, `EventEmitter`, `promiseAll` | ✅ |
 | `module-4/domain-types` | 4 | Typed domain model, discriminated states, schema validation, typed API client | |
 | `module-5/feed-ui` | 5 | The listings feed in React — composition, keys, effects, a profiler pass | |
 | `module-6/typed-components` | 6 | Typed primitives: polymorphic `Button`, generic `Select`, typed fields | |
@@ -114,15 +114,21 @@ numbers.
 
 ```
 src/
-  domain/        Job, Employer, Application — the types every stage shares
-  data/          fixtures: realistic listings, employers, applications
-  api/           a fake API with real latency, aborts and out-of-order responses
-  components/    UI built during the program, not installed from a library
-  utils/         the interview utility library
-  app/           the assembled job board
+  app/           the composition root — wires features together, owns no business logic
+  features/      business subdomains: jobs · search · applications
+  ui/            design-system primitives (module 6 onward)
+  domain/        Job, Employer, Application — the shared language, types only
+  data/          fixtures/ seed data · server/ the fake backend
+  utils/         the interview utility library — framework-free
+  styles/        global stylesheet and tokens
   test/          setup shared by every suite
 scripts/         the stage tooling (see below)
 ```
+
+**The layers point downward and a feature's internals are private** — both enforced by
+`eslint.config.js` and checked in CI, so a bad import fails the build rather than review.
+The full map, including which stage owns which paths, is in
+[`ARCHITECTURE.md`](./ARCHITECTURE.md). Read it before adding a stage.
 
 **No component library, on purpose.** If a student can `pnpm add` a combobox, they never
 learn what a combobox is. Everything with an interaction model is built in this repo.
@@ -147,6 +153,7 @@ it for the right reason.
 ```bash
 pnpm dev            # dev server
 pnpm build          # typecheck + production build
+pnpm lint           # style, hooks, and the import boundaries
 pnpm test           # run once
 pnpm test:watch     # watch mode
 pnpm typecheck      # tsc --noEmit
@@ -207,17 +214,22 @@ Inside solution files, the stripper reads:
 
 ### CI
 
-`.github/workflows/ci.yml` typechecks every branch, then asserts the contract:
+`.github/workflows/ci.yml` typechecks and lints every branch, then asserts the contract:
 
 - a `solution` branch (or `main`) **must pass** its tests
 - a `start` or `guided` branch **must fail** — otherwise the exercise is already solved
 
+The lint step is where the architecture is actually enforced: a cross-feature import, a
+reach past a front door, or a utility that grew a dependency all fail the build.
+
 ### Rules that keep this from rotting
 
 1. Never hand-edit `guided` or `start`. Regenerate them.
-2. Solutions never merge into `main` except through `module-12/capstone` — `main` is the
+2. Keep stage path ownership disjoint — see the table in `ARCHITECTURE.md`. Two stages that
+   strip overlapping paths blank out work the student already finished.
+3. Solutions never merge into `main` except through `module-12/capstone` — `main` is the
    assembled product, not a pile of exercises.
-3. Never commit a secret. `.env.example` carries the keys with dummy values; `.env` and
+4. Never commit a secret. `.env.example` carries the keys with dummy values; `.env` and
    `.env.*` are ignored.
 
 ---

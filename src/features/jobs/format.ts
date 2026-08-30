@@ -1,4 +1,4 @@
-import type { Job, SalaryRange } from '@/domain/types'
+import type { Job, SalaryRange } from '@/domain'
 
 export const formatSalary = (salary: SalaryRange | null): string => {
   if (!salary) return 'Salary not disclosed'
@@ -29,3 +29,12 @@ export const SENIORITY_LABEL = {
   senior: 'Senior',
   staff: 'Staff',
 } as const
+
+/** Two-letter fallback for an employer with no logo. */
+export const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
