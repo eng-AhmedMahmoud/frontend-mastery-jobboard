@@ -5,7 +5,7 @@
  * Run it from the solution branch after any change to that stage. The derived branches are
  * always recreated from scratch, never patched, so a hand-edit on them cannot survive.
  *
- * Usage: node scripts/publish-stage.mjs m03-utils
+ * Usage: node scripts/publish-stage.mjs module-3/utils
  */
 
 import { execFileSync } from 'node:child_process'
@@ -13,7 +13,7 @@ import { execFileSync } from 'node:child_process'
 const stage = process.argv[2]
 
 if (!stage) {
-  console.error('usage: node scripts/publish-stage.mjs <stage>   e.g. m03-utils')
+  console.error('usage: node scripts/publish-stage.mjs <stage>   e.g. module-3/utils')
   process.exit(1)
 }
 

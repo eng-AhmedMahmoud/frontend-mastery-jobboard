@@ -23,6 +23,11 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # The architecture is these rules. A cross-feature import, a reach past a front
+      # door, or a utility that grew a dependency all fail here — see ARCHITECTURE.md.
+      - name: Lint (includes the import boundaries)
+        run: pnpm lint
+
       # A solution branch is the source of truth: it has to be green.
       # A start or guided branch has to be RED — if its tests pass, the exercise
       # is already solved and the student has nothing to do. Catch that here,
