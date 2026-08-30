@@ -4,7 +4,7 @@
   "video": null,
   "title": "Search autocomplete",
   "strip": [
-    "src/components/autocomplete"
+    "src/features/search"
   ],
-  "note": "Only this stage's files are stripped. src/utils stays solved — the student wrote it in module-3/utils and this component imports its debounce."
+  "note": "Only this stage's paths are stripped. src/utils stays solved — the student wrote it in module-3/utils and this component imports its debounce. The feature owns its own folder, so nothing else in the tree is touched."
 }
