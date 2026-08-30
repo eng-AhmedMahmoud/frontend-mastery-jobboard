@@ -1,7 +1,10 @@
 {
-  "stage": "m07-autocomplete",
+  "stage": "module-7/autocomplete",
   "module": 7,
+  "video": null,
   "title": "Search autocomplete",
-  "strip": ["src/components/autocomplete"],
-  "note": "Only this stage's files are stripped. src/utils stays solved — the student wrote it in m03-utils and this component imports its debounce."
+  "strip": [
+    "src/components/autocomplete"
+  ],
+  "note": "Only this stage's files are stripped. src/utils stays solved — the student wrote it in module-3/utils and this component imports its debounce."
 }
