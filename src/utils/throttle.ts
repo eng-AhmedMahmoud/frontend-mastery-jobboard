@@ -1,6 +1,6 @@
-// #note throttle — runs at most once per `wait` ms, no matter how often it's called.
-// #note Debounce waits for quiet; throttle guarantees a steady rate. On the job board this is
-// #note the infinite-scroll handler: fire while the user keeps scrolling, but bounded.
+// throttle — runs at most once per `wait` ms, no matter how often it's called.
+// Debounce waits for quiet; throttle guarantees a steady rate. On the job board this is
+// the infinite-scroll handler: fire while the user keeps scrolling, but bounded.
 
 export interface Throttled<T extends (...args: never[]) => void> {
   (...args: Parameters<T>): void
@@ -19,11 +19,6 @@ export function throttle<T extends (...args: never[]) => void>(
   wait: number,
   options: ThrottleOptions = {},
 ): Throttled<T> {
-  // #hint 1 Decide the edges before you write anything: leading fires immediately, trailing fires once at the end of the window. Most bugs here are really unstated assumptions.
-  // #hint 2 Track the timestamp of the last invocation. A call is allowed when `now - last >= wait`.
-  // #hint 3 If a call arrives mid-window and `trailing` is on, store its arguments and schedule one run for when the window closes — don't schedule one per call.
-  // #hint 4 With `leading: false`, the first call must not run immediately — that's the case that breaks most implementations.
-  // #region solution
   const leading = options.leading ?? true
   const trailing = options.trailing ?? true
 
@@ -78,5 +73,4 @@ export function throttle<T extends (...args: never[]) => void>(
   }
 
   return throttled
-  // #endregion
 }
