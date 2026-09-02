@@ -1,0 +1,10 @@
+{
+  "stage": "module-1/setup",
+  "module": 1,
+  "video": 7,
+  "title": "Workspace, Git and the loop — score your own diagnostic",
+  "strip": [
+    "src/diagnostic"
+  ],
+  "note": "The first stage a student ever checks out. Nothing earlier to preserve. src/diagnostic is deliberately framework-free and depends on nothing in src — the exercise is about running the loop, not about the job board."
+}
