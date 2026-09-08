@@ -89,7 +89,7 @@ step is where most of the learning actually happens — not in getting to green.
 
 ## Branch naming
 
-Branches follow the course-wide convention in [`GIT-CONVENTIONS.md`](../GIT-CONVENTIONS.md) —
+Branches follow the [course-wide convention](https://github.com/eng-AhmedMahmoud/frontend-mastery-program#git-conventions) —
 one branch per video, namespaced by module:
 
 ```
