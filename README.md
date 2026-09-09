@@ -70,6 +70,7 @@ step is where most of the learning actually happens — not in getting to green.
 
 | Branch base | Module | What you build | Status |
 |---|:--:|---|:--:|
+| `module-1/setup` | 1 | The workspace, the three-branch workflow, and the scorer that turns your diagnostic marks into the module to open first | ✅ |
 | `module-2/browser-lab` | 2 | Instrument a slow page: reflow vs repaint, compositor-only animation, flame charts | |
 | `module-3/utils` | 3 | The utility library: `debounce`, `throttle`, `deepClone`, `EventEmitter`, `promiseAll` | ✅ |
 | `module-4/domain-types` | 4 | Typed domain model, discriminated states, schema validation, typed API client | |
@@ -83,7 +84,7 @@ step is where most of the learning actually happens — not in getting to green.
 | `module-10/perf-and-tests` | 10 | Baseline → budget → fix, with Vitest + Playwright + MSW in CI | |
 | `module-12/capstone` | 12 | Assemble everything, wire auth, deploy, write the architecture story | |
 
-12 stages × 3 branches, plus `main`.
+13 stages × 3 branches, plus `main` — forty branches in all.
 
 ---
 
