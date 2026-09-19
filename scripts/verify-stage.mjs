@@ -39,6 +39,22 @@ for (const branch of branches.slice(1)) {
   }
 }
 
+// 1b — the solution's own notes must not have ridden along into the derived branches
+const SOLUTION_ONLY = ['NOTES.md']
+const tracked = (branch, path) =>
+  spawnSync('git', ['cat-file', '-e', `${branch}:${path}`]).status === 0
+
+for (const path of SOLUTION_ONLY) {
+  for (const branch of branches.slice(1)) {
+    if (tracked(branch, path)) {
+      failures.push(`${branch}: ${path} is solution-only — it hands the student the discussion`)
+    }
+  }
+  if (!tracked(branches[0], path)) {
+    console.log(`· ${branches[0]} has no ${path} — the trade-offs are undocumented for this stage`)
+  }
+}
+
 // 2–4 — expected pass/fail per branch
 const expectation = { solution: 'pass', guided: 'fail', start: 'fail' }
 
