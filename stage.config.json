@@ -1,0 +1,10 @@
+{
+  "stage": "module-2/browser-lab",
+  "module": 2,
+  "video": 10,
+  "title": "Instrument a slow page and prove the fix",
+  "strip": [
+    "src/features/perf-lab"
+  ],
+  "note": "Earliest stage in the program after module 1. It owns src/features/perf-lab and nothing else, so the utils the student writes in module 3 and the search feature they build in module 7 are untouched by it."
+}
