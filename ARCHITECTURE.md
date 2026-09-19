@@ -66,7 +66,7 @@ would blank out work the student already finished on an earlier stage.
 
 | Stage branch | Owns | Status |
 |---|---|:--:|
-| `module-2/browser-lab` | `src/features/perf-lab/` | |
+| `module-2/browser-lab` | `src/features/perf-lab/` | ✅ built |
 | `module-3/utils` | `src/utils/` | ✅ built |
 | `module-4/domain-types` | `src/domain/` | |
 | `module-5/feed-ui` | `src/features/jobs/components/`, `src/features/jobs/hooks/` | |

@@ -71,7 +71,7 @@ step is where most of the learning actually happens — not in getting to green.
 | Branch base | Module | What you build | Status |
 |---|:--:|---|:--:|
 | `module-1/setup` | 1 | The workspace, the three-branch workflow, and the scorer that turns your diagnostic marks into the module to open first | ✅ |
-| `module-2/browser-lab` | 2 | Instrument a slow page: reflow vs repaint, compositor-only animation, flame charts | |
+| `module-2/browser-lab` | 2 | Instrument a slow page: windowing, frame-aligned handlers, read/write batching, and a measurement you can show | ✅ |
 | `module-3/utils` | 3 | The utility library: `debounce`, `throttle`, `deepClone`, `EventEmitter`, `promiseAll` | ✅ |
 | `module-4/domain-types` | 4 | Typed domain model, discriminated states, schema validation, typed API client | |
 | `module-5/feed-ui` | 5 | The listings feed in React — composition, keys, effects, a profiler pass | |
@@ -97,17 +97,27 @@ one branch per video, namespaced by module:
 module-<N>/v<V>-<slug>/<start|guided|solution>
 ```
 
-Video numbers arrive with each module's lesson map, so today the branches carry the module
-and the slug only:
+Video numbers arrive with each module's lesson map, so the branches carry the module and
+the slug only:
 
 ```
-module-3/utils/start          ← now
-module-3/v4-utils/start       ← once module 3's lesson map exists
+module-2/browser-lab/start
+module-3/utils/start
 ```
 
 The end state of each video gets tagged `m<N>-v<V>-end` on its `solution` branch, so a
-student who fell behind runs `git checkout m3-v4-end` and is caught up. Tags land with the
-numbers.
+student who fell behind runs `git checkout m2-v10-end` and is caught up. Modules 1, 2 and 3
+have their lesson maps, so their tags are published:
+
+| Tag | Stage | The lesson it ends |
+|---|---|---|
+| `m1-v7-end` | `module-1/setup` | 1 · 7 — workspace, Git and the repo conventions |
+| `m2-v10-end` | `module-2/browser-lab` | 2 · 10 — instrument a slow page and prove the fix |
+| `m3-v10-end` | `module-3/utils` | 3 · 10 — the interview toolbelt, part 2 |
+
+The branch names stay on the slug form even where the video number is known: they are
+printed in the decks and typed by hand from a paused video, and renaming them would break
+every link already recorded.
 
 ---
 
