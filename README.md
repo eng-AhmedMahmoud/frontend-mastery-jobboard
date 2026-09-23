@@ -84,7 +84,7 @@ step is where most of the learning actually happens — not in getting to green.
 | `module-10/perf-and-tests` | 10 | Baseline → budget → fix, with Vitest + Playwright + MSW in CI | |
 | `module-12/capstone` | 12 | Assemble everything, wire auth, deploy, write the architecture story | |
 
-13 stages × 3 branches, plus `main` — forty branches in all.
+Three branches per stage, plus `main`.
 
 ---
 
